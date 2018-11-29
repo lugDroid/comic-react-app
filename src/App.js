@@ -105,6 +105,19 @@ class SearchResults extends Component {
 
 class App extends Component {
   render() {
+    const file = new File('./key.txt')
+    const reader = new FileReader()
+    let apiKey
+
+    reader.onload = function(event) {
+      apiKey = event.target.result
+      console.log(apiKey)
+    }
+
+    reader.readAsText(file)
+
+    
+
     return (
       <div className="App">
         <Sidebar/>

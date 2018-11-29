@@ -1,9 +1,9 @@
-const fetch = require('node-fetch')
+import fetch from 'node-fetch'
 
 // search volumes given a search text
 // will return a promise that eventually will be an array with the results
 async function searchVolume(volume, url, apiKey) {
-  url = url + '/volumes/?api_key='
+  url = url + '/volumes/?api_key=' 
   url = url + apiKey
   url = url + '&format=json&filter=name:' + volume
 
@@ -30,7 +30,6 @@ async function searchIssues(volumeID, url, apiKey) {
 // ### MAIN ###
 
 //const proxy = 'https://allorigins.me/get?method=raw&url='
-const apiKey = '8cd3ed9e59e0d9a58377048e00674d893b7a2450'
 let baseURL = 'http://comicvine.gamespot.com/api'
 
 // TO-DO: this value should come from an input box
