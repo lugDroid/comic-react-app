@@ -11,11 +11,12 @@ async function searchVolume(volume, url, apiKey) {
   url = url + apiKey
   url = url + '&format=json&filter=name:' + volume
 
-  let results = await fetch(url, {mode: 'no-cors'})
-    .then(response => response.json())
-    .then(json => json.results)
+  let volumesResult = await fetch(url, {mode: 'no-cors'})
+      .then(response => response.json())
+      .then(json => json.results)
+      .catch(error => console.log('Error reading data from comic vine ' + error))
 
-  return results
+  return volumesResult
 }
 
 // search for issues given a volume id
@@ -24,11 +25,12 @@ async function searchIssues(volumeID, url, apiKey) {
   url = url + apiKey  
   url = url + '&format=json&filter=volume:' + volumeID
   
-  let results = await fetch(url, {mode: 'no-cors'})
+  let issuesResult = await fetch(url, {mode: 'no-cors'})
     .then(res => res.json())
     .then(json => json.results)
+    .catch(error => console.log('Error reading data from comic vine ' + error))
 
-  return results
+  return issuesResult
 }
 
 // ### MAIN ###
