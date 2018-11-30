@@ -1,119 +1,66 @@
-import React, { Component } from 'react';
-import './App.css';
-
-const misterMiracle = {
-  id: 103397,
-  title: 'Mister Miracle',
-  totalIssues: 12,
-  ownedIssues: 12,
-  status: 'Finished',
-  img: 'https://static.comicvine.com/uploads/scale_small/6/67663/5996667-01.jpg',
-  publishingDate: 2017,
-  issues: []
-}
-
-const manOfSteel = {
-  id: 111145,
-  title: 'Man of Steel',
-  totalIssues: 6,
-  ownedIssues: 3,
-  status: 'Ongoing',
-  img: 'https://static.comicvine.com/uploads/scale_small/6/67663/6451280-01.jpg',
-  publishingDate: 2018,
-  issues: []
-}
-
-class CollectionSummary extends Component {
-  render() {
-    // define styles
-    const containerStyle = {
-      margin: '0 10px 10px',
-      overflow: 'auto'
-    }
-    const thumbStyle = {
-      float: 'left'
-    }
-    const imgStyle = {
-      display: 'block',
-      width: '100px'
-    }
-    const contentStyle = {
-      marginLeft: "110px",
-      lineHeigh: 0
-    }
-    return (
-      <div style={containerStyle}>
-        <div style={thumbStyle}>
-          <img style={imgStyle} alt="Collection Cover" src={this.props.data.img}></img>
-        </div>
-        <div style={contentStyle}>
-          <h3>{this.props.data.title}</h3>
-          <p>{this.props.data.ownedIssues}/{this.props.data.totalIssues} Issues</p>
-          <p>{this.props.data.status}</p>
-        </div>
-      </div>
-    )
-  }
-}
-
-class Sidebar extends Component {
-  render() {
-    const sideStyle = {
-      borderRight: '1px solid white',
-      width: '300px',
-      height: '100%',
-      position: 'fixed',
-      zIndex: 1,
-      left: 0,
-      overflowX: 'hidden'
-    }
-
-    return (
-      <div style={sideStyle}>
-        <h2>Your Collections</h2>
-        <CollectionSummary data={misterMiracle}/>
-        <CollectionSummary data={manOfSteel}/>
-        <Search/>
-      </div>
-    )
-  }
-}
-
-class Search extends Component {
-  render() {
-    return (
-      <div>
-        <input type="text"/>
-        <button>Search</button>
-      </div>
-    )
-  }
-}
-
-class SearchResults extends Component {
-  render() {
-    const resultsStyle = {
-      marginLeft: '300px',
-      padding: '0 10px'
-    }
-
-    return (
-      <div style={resultsStyle}>
-        <h1>Search Results</h1>
-      </div>
-    )
-  }
-}
+import React, { Component } from 'react'
+import Sidebar from'./Sidebar.js'
+import SearchResults from './SearchResults.js'
+import {searchVolumes, searchIssues} from './addCollection.js'
+import {COMIC_VINE_API_KEY} from './key.js'
+import './App.css'
 
 class App extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      searchText: '',
+      searchResults: [],
+      collections: []
+    }
+
+    this.handleSearchTextChange = this.handleSearchTextChange.bind(this)
+    this.handleSearchSubmit = this.handleSearchSubmit.bind(this)
+  }
+
+  handleSearchTextChange(text) {
+    this.setState({searchText: text})
+  }
+
+  handleSearchSubmit() {
+    // load api key file
+    const apiKey = COMIC_VINE_API_KEY
+
+    //const proxy = 'https://allorigins.me/get?method=raw&url='
+    const baseURL = 'https://comicvine.gamespot.com/api'
+
+    // fetch volume information
+    if (this.state.searchText) {
+      
+      const volumesPromises = searchVolumes(this.state.searchText, baseURL, apiKey)
+      volumesPromises.then(volumes => {
+        volumes.forEach((volume, index) => {
+          const volumeInfo = {
+            title: volume.name,
+            startYear: volume.start_year,
+            deck: volume.deck
+          }
+          this.setState({
+            searchResults: this.searchResults.concat(volumeInfo)
+          })
+        })
+      })
+    }
+  }
+
   render() {
     return (
       <div className="App">
-        <Sidebar/>
-        <SearchResults/>
+        <Sidebar 
+          searchText={this.state.searchText}
+          onValueChange={this.handleSearchTextChange}
+          onSubmit={this.handleSearchSubmit}
+        />
+        <SearchResults 
+          results={this.state.searchResults}/>
       </div>
     );
   }
 }
 
-export default App;
+export default App

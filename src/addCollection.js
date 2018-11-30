@@ -1,20 +1,19 @@
 const fetch = require('node-fetch')
 
-// load api key from env file
-require('dotenv').config()
-const apiKey = process.env.COMIC_VINE_API_KEY
-
 // search volumes given a search text
 // will return a promise that eventually will be an array with the results
-async function searchVolume(volume, url, apiKey) {
-  url = url + '/volumes/?api_key=' 
-  url = url + apiKey
-  url = url + '&format=json&filter=name:' + volume
+async function searchVolumes(volume, url, apiKey) {
+  url += '/volumes/' 
+  url += '?api_key=' + apiKey
+  url += '&filter=name:' + volume 
+  url += '&format=json'
 
+  console.log('Fetching info for volumes containing ' + volume)
+  console.log(url)
   let volumesResult = await fetch(url, {mode: 'no-cors'})
-      .then(response => response.json())
-      .then(json => json.results)
-      .catch(error => console.log('Error reading data from comic vine ' + error))
+    .then(res => res.json())
+    .then(json => json.results)
+    .catch(error => console.log('Error reading data ' + error))
 
   return volumesResult
 }
@@ -33,7 +32,12 @@ async function searchIssues(volumeID, url, apiKey) {
   return issuesResult
 }
 
+export {searchVolumes, searchIssues}
+/* 
 // ### MAIN ###
+
+// load api key file
+const apiKey =
 
 //const proxy = 'https://allorigins.me/get?method=raw&url='
 let baseURL = 'http://comicvine.gamespot.com/api'
@@ -41,7 +45,7 @@ let baseURL = 'http://comicvine.gamespot.com/api'
 // TO-DO: this value should come from an input box
 let searchText = 'mister%20miracle'
 
-let volumesPromises = searchVolume(searchText, baseURL, apiKey)
+let volumesPromises = searchVolumes(searchText, baseURL, apiKey)
 
 volumesPromises.then(volumes => {
   volumes.forEach((volume, index) => {
@@ -70,3 +74,4 @@ volumesPromises.then(volumes => {
   })
 })
 
+ */

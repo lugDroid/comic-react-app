@@ -2,7 +2,7 @@ body {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  line-height: 0.3;
+  line-height: normal;
   font-family: "Roboto", "Oxygen", "Ubuntu", sans-serif;
   background-color: #282c34;
   min-height: 100vh;
