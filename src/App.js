@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 
 const misterMiracle = {
+  id: 103397,
   title: 'Mister Miracle',
   totalIssues: 12,
   ownedIssues: 12,
@@ -12,6 +13,7 @@ const misterMiracle = {
 }
 
 const manOfSteel = {
+  id: 111145,
   title: 'Man of Steel',
   totalIssues: 6,
   ownedIssues: 3,
@@ -105,19 +107,6 @@ class SearchResults extends Component {
 
 class App extends Component {
   render() {
-    const file = new File('./key.txt')
-    const reader = new FileReader()
-    let apiKey
-
-    reader.onload = function(event) {
-      apiKey = event.target.result
-      console.log(apiKey)
-    }
-
-    reader.readAsText(file)
-
-    
-
     return (
       <div className="App">
         <Sidebar/>
@@ -126,7 +115,5 @@ class App extends Component {
     );
   }
 }
-
-
 
 export default App;
