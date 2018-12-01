@@ -10,7 +10,7 @@ async function searchVolumes(volume, url, apiKey) {
 
   console.log('Fetching info for volumes containing ' + volume)
   console.log(url)
-  let volumesResult = await fetch(url, {mode: 'no-cors'})
+  let volumesResult = await fetch(url)
     .then(res => res.json())
     .then(json => json.results)
     .catch(error => console.log('Error reading data ' + error))
@@ -24,7 +24,7 @@ async function searchIssues(volumeID, url, apiKey) {
   url = url + apiKey  
   url = url + '&format=json&filter=volume:' + volumeID
   
-  let issuesResult = await fetch(url, {mode: 'no-cors'})
+  let issuesResult = await fetch(url)
     .then(res => res.json())
     .then(json => json.results)
     .catch(error => console.log('Error reading data from comic vine ' + error))

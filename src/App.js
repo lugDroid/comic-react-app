@@ -27,23 +27,26 @@ class App extends Component {
     const apiKey = COMIC_VINE_API_KEY
 
     //const proxy = 'https://allorigins.me/get?method=raw&url='
-    const baseURL = 'https://comicvine.gamespot.com/api'
+    const proxy = 'https://cors-anywhere.herokuapp.com/'
+    //const proxy = 'https://crossorigin.me/'
+    const baseURL = proxy + 'https://comicvine.gamespot.com/api'
 
     // fetch volume information
     if (this.state.searchText) {
       
       const volumesPromises = searchVolumes(this.state.searchText, baseURL, apiKey)
       volumesPromises.then(volumes => {
-        volumes.forEach((volume, index) => {
-          const volumeInfo = {
-            title: volume.name,
-            startYear: volume.start_year,
-            deck: volume.deck
-          }
-          this.setState({
-            searchResults: this.searchResults.concat(volumeInfo)
-          })
-        })
+        console.log(volumes)
+        // volumes.forEach((volume, index) => {
+        //   const volumeInfo = {
+        //     title: volume.name,
+        //     startYear: volume.start_year,
+        //     deck: volume.deck
+        //   }
+        //   this.setState({
+        //     searchResults: this.searchResults.concat(volumeInfo)
+        //   })
+        // })
       })
     }
   }
