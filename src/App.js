@@ -34,7 +34,7 @@ class App extends Component {
     // fetch volume information
     if (this.state.searchText) {
       
-      const volumesPromises = searchVolumes(this.state.searchText, baseURL, apiKey)
+      const volumesPromises = searchVolumes(this.state.searchText.replace(' ', '%20'), baseURL, apiKey)
       volumesPromises.then(volumes => {
         let volumeList = volumes.map(volume => {
           return {
