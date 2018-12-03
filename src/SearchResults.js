@@ -10,7 +10,11 @@ class SearchResults extends Component {
     return (
       <div style={resultsStyle}>
         <h1>Search Results</h1>
-        {this.props.results.map(volume => <li>volume.title</li>)}
+        {this.props.results.map(volume => <li key={volume.id}>{
+          volume.start_year
+           + ' - ' + volume.title
+           + '(' + volume.deck + ')'
+          }</li>)}
       </div>
     )
   }

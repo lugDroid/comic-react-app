@@ -36,17 +36,18 @@ class App extends Component {
       
       const volumesPromises = searchVolumes(this.state.searchText, baseURL, apiKey)
       volumesPromises.then(volumes => {
-        console.log(volumes)
-        // volumes.forEach((volume, index) => {
-        //   const volumeInfo = {
-        //     title: volume.name,
-        //     startYear: volume.start_year,
-        //     deck: volume.deck
-        //   }
-        //   this.setState({
-        //     searchResults: this.searchResults.concat(volumeInfo)
-        //   })
-        // })
+        let volumeList = volumes.map(volume => {
+          return {
+            id: volume.id,
+            title: volume.name,
+            startYear: volume.start_year,
+            deck: volume.deck
+          }
+        })
+
+        this.setState({
+          searchResults: volumeList
+        })
       })
     }
   }
