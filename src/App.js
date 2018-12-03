@@ -55,6 +55,7 @@ class App extends Component {
     this.handleSearchTextChange = this.handleSearchTextChange.bind(this)
     this.handleSearchSubmit = this.handleSearchSubmit.bind(this)
     this.handleOnClickCollection = this.handleOnClickCollection.bind(this)
+    this.handleOnClickResult = this.handleOnClickResult.bind(this)
   }
 
   handleSearchTextChange(text) {
@@ -78,8 +79,9 @@ class App extends Component {
           return {
             id: volume.id,
             title: volume.name,
-            startYear: volume.start_year,
-            deck: volume.deck
+            totalIssues: volume.count_of_issues,
+            img: volume.image.thumb_url,      
+            publishingDate: volume.start_year,
           }
         })
 
@@ -97,6 +99,24 @@ class App extends Component {
     })
   }
 
+  handleOnClickResult(result) {
+    let collections = this.state.collections.slice()
+
+    collections.push({
+      id: result.id,
+      title: result.title,
+      totalIssues: result.totalIssues,
+      ownedIssues: 0,
+      status: 'Placeholder',
+      img: result.img,
+      publishingDate: result.publishingDate,
+      issues: []
+    })
+    console.log(collections)
+    this.setState({
+      collections: collections
+    })
+  }
   render() {
     return (
       <div className="App">
@@ -108,8 +128,13 @@ class App extends Component {
           onClickCollection={this.handleOnClickCollection}
         />
         {this.state.isSearch
-          ? <SearchResults results={this.state.searchResults}/>
-          : <IssueList collection={this.state.collectionSelected}/>
+          ? <SearchResults 
+              results={this.state.searchResults}
+              onClickResult={this.handleOnClickResult}
+            />
+          : <IssueList 
+              collection={this.state.collectionSelected}
+            />
         }
         
       </div>
