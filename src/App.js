@@ -2,20 +2,59 @@ import React, { Component } from 'react'
 import Sidebar from'./Sidebar.js'
 import SearchResults from './SearchResults.js'
 import {searchVolumes, searchIssues} from './addCollection.js'
+import IssueList from './IssueList.js'
 import {COMIC_VINE_API_KEY} from './key.js'
 import './App.css'
 
+const proxy = 'https://cors-anywhere.herokuapp.com/'
+const baseURL = proxy + 'https://comicvine.gamespot.com/api'
+//const proxy = 'https://allorigins.me/get?method=raw&url='
+//const proxy = 'https://crossorigin.me/'
+
+// load api key file
+const apiKey = COMIC_VINE_API_KEY
+
+// Temporary data
+const misterMiracle = {
+  id: 103397,
+  title: 'Mister Miracle',
+  totalIssues: 12,
+  ownedIssues: 12,
+  status: 'Finished',
+  img: 'https://static.comicvine.com/uploads/scale_small/6/67663/5996667-01.jpg',
+  publishingDate: 2017,
+  issues: []
+}
+
+const manOfSteel = {
+  id: 111145,
+  title: 'Man of Steel',
+  totalIssues: 6,
+  ownedIssues: 3,
+  status: 'Ongoing',
+  img: 'https://static.comicvine.com/uploads/scale_small/6/67663/6451280-01.jpg',
+  publishingDate: 2018,
+  issues: []
+}
+
+// ******************
+// Main app component
 class App extends Component {
   constructor(props) {
     super(props)
+
+    // state definition
     this.state = {
       searchText: '',
       searchResults: [],
-      collections: []
+      collections: [misterMiracle, manOfSteel],
+      isSearch: false,
+      collectionSelected: ''
     }
 
     this.handleSearchTextChange = this.handleSearchTextChange.bind(this)
     this.handleSearchSubmit = this.handleSearchSubmit.bind(this)
+    this.handleOnClickCollection = this.handleOnClickCollection.bind(this)
   }
 
   handleSearchTextChange(text) {
@@ -23,13 +62,12 @@ class App extends Component {
   }
 
   handleSearchSubmit() {
-    // load api key file
-    const apiKey = COMIC_VINE_API_KEY
-
-    //const proxy = 'https://allorigins.me/get?method=raw&url='
-    const proxy = 'https://cors-anywhere.herokuapp.com/'
-    //const proxy = 'https://crossorigin.me/'
-    const baseURL = proxy + 'https://comicvine.gamespot.com/api'
+    // activate search view on main display
+    // previous search results are cleaned now too
+    this.setState({
+      isSearch: true,
+      searchResults: []
+    })
 
     // fetch volume information
     if (this.state.searchText) {
@@ -52,16 +90,28 @@ class App extends Component {
     }
   }
 
+  handleOnClickCollection(collection) {
+    this.setState({
+      isSearch: false,
+      collectionSelected: collection 
+    })
+  }
+
   render() {
     return (
       <div className="App">
-        <Sidebar 
+        <Sidebar
+          collections={this.state.collections}
           searchText={this.state.searchText}
           onValueChange={this.handleSearchTextChange}
           onSubmit={this.handleSearchSubmit}
+          onClickCollection={this.handleOnClickCollection}
         />
-        <SearchResults 
-          results={this.state.searchResults}/>
+        {this.state.isSearch
+          ? <SearchResults results={this.state.searchResults}/>
+          : <IssueList collection={this.state.collectionSelected}/>
+        }
+        
       </div>
     );
   }

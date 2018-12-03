@@ -1,30 +1,20 @@
 import React, { Component } from 'react'
 
-// Temporary data
-const misterMiracle = {
-  id: 103397,
-  title: 'Mister Miracle',
-  totalIssues: 12,
-  ownedIssues: 12,
-  status: 'Finished',
-  img: 'https://static.comicvine.com/uploads/scale_small/6/67663/5996667-01.jpg',
-  publishingDate: 2017,
-  issues: []
-}
-
-const manOfSteel = {
-  id: 111145,
-  title: 'Man of Steel',
-  totalIssues: 6,
-  ownedIssues: 3,
-  status: 'Ongoing',
-  img: 'https://static.comicvine.com/uploads/scale_small/6/67663/6451280-01.jpg',
-  publishingDate: 2018,
-  issues: []
-}
-
-
+// displays information about collections that
+// are followed
 class CollectionSummary extends Component {
+  constructor(props) {
+    super(props)
+
+    this.handleClick = this.handleClick.bind(this)
+  }
+
+  // When clicked information about the collection
+  // will be displayed on the main window
+  handleClick() {
+    this.props.onClick(this.props.data)
+  }
+
   render() {
     // define styles
     const containerStyle = {
@@ -42,8 +32,9 @@ class CollectionSummary extends Component {
       marginLeft: "110px",
       lineHeigh: 0
     }
+    
     return (
-      <div style={containerStyle}>
+      <div style={containerStyle} onClick={this.handleClick}>
         <div style={thumbStyle}>
           <img style={imgStyle} alt="Collection Cover" src={this.props.data.img}></img>
         </div>
@@ -91,6 +82,7 @@ class Search extends Component {
   }
 }
 
+// Container that wrappes all the sidebar elements
 class Sidebar extends Component {
   render() {
     const sideStyle = {
@@ -106,8 +98,12 @@ class Sidebar extends Component {
     return (
       <div style={sideStyle}>
         <h2>Your Collections</h2>
-        <CollectionSummary data={misterMiracle}/>
-        <CollectionSummary data={manOfSteel}/>
+        {this.props.collections.map(collection => {
+          return <CollectionSummary key={collection.id}
+          data={collection}
+          onClick={this.props.onClickCollection}
+        />
+        })}
         <Search
           searchText={this.props.searchText}
           onValueChange={this.props.onValueChange}
