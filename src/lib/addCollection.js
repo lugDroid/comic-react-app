@@ -6,13 +6,18 @@ async function searchVolumes(volume, url, apiKey) {
   url += '/volumes/' 
   url += '?api_key=' + apiKey
   url += '&filter=name:' + volume 
-  url += '&format=json'
+  url += '&format=json&sort=name:asc'
 
   console.log('Fetching info for volumes containing ' + volume)
   console.log(url)
   let volumesResult = await fetch(url)
     .then(res => res.json())
-    .then(json => json.results)
+    .then(json => {
+      return {
+        results: json.results, 
+        numberOfResults: json.number_of_total_results
+      }
+    })
     .catch(error => console.log('Error reading data ' + error))
 
   return volumesResult

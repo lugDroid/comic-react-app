@@ -12,13 +12,17 @@ class SearchResults extends Component {
     return(
       <div style={resultsStyle}>
         <h1>Search Results</h1>
-        {this.props.results.map(volume => 
+        {this.props.numberOfResults
+          ? <h3>Number of results - {this.props.numberOfResults}</h3>
+          : <div></div>
+        }
+        {this.props.results.map((volume, index) => 
             <li 
               key={volume.id}>
               <Result
                 onClick={this.props.onClickResult}
                 volumeData={volume}
-              />
+                number={index}/>
             </li>
           )}
       </div>

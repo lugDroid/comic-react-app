@@ -26,6 +26,7 @@ class App extends Component {
       searchResults: [],
       collections: [misterMiracle, manOfSteel],
       isSearch: false,
+      numberOfResults: 0,
       collectionSelected: ''
     }
 
@@ -44,7 +45,8 @@ class App extends Component {
     // previous search results are cleaned now too
     this.setState({
       isSearch: true,
-      searchResults: []
+      searchResults: [],
+      numberOfResults: 0
     })
 
     // fetch volume information
@@ -53,8 +55,11 @@ class App extends Component {
       // searchVolumes returns a promise
       const volumesPromises = searchVolumes(this.state.searchText.replace(' ', '%20'), baseURL, apiKey)
 
-      volumesPromises.then(volumes => {
-        let volumeList = volumes.map(volume => {
+      volumesPromises.then(data => {
+        this.setState({
+          numberOfResults: data.numberOfResults
+        })
+        let volumeList = data.results.map(volume => {
           return {
             id: volume.id,
             title: volume.name,
@@ -65,7 +70,7 @@ class App extends Component {
         })
 
         this.setState({
-          searchResults: volumeList
+          searchResults: volumeList,
         })
       })
     }
@@ -115,6 +120,7 @@ class App extends Component {
           ? <SearchResults 
               results={this.state.searchResults}
               onClickResult={this.handleOnClickResult}
+              numberOfResults={this.state.numberOfResults}
             />
           : <IssueList 
               collection={this.state.collectionSelected}

@@ -40,7 +40,7 @@ class Result extends Component {
           </img>
         </div>
         <div style={contentStyle}>
-          <h3>{this.props.volumeData.title}</h3>
+          <h3>{this.props.number + 1} - {this.props.volumeData.title}</h3>
           <h4>{this.props.volumeData.publishingDate}</h4>
           <h4>{this.props.volumeData.totalIssues} Issues</h4>
         </div>
