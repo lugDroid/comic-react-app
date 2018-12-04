@@ -4,6 +4,7 @@ import SearchResults from './SearchResults.js'
 import {searchVolumes, searchIssues} from './addCollection.js'
 import IssueList from './IssueList.js'
 import {COMIC_VINE_API_KEY} from './key.js'
+import {misterMiracle, manOfSteel} from './tempData.js'
 import './App.css'
 
 const proxy = 'https://cors-anywhere.herokuapp.com/'
@@ -14,36 +15,12 @@ const baseURL = proxy + 'https://comicvine.gamespot.com/api'
 // load api key file
 const apiKey = COMIC_VINE_API_KEY
 
-// Temporary data
-const misterMiracle = {
-  id: 103397,
-  title: 'Mister Miracle',
-  totalIssues: 12,
-  ownedIssues: 12,
-  status: 'Finished',
-  img: 'https://static.comicvine.com/uploads/scale_small/6/67663/5996667-01.jpg',
-  publishingDate: 2017,
-  issues: []
-}
-
-const manOfSteel = {
-  id: 111145,
-  title: 'Man of Steel',
-  totalIssues: 6,
-  ownedIssues: 3,
-  status: 'Ongoing',
-  img: 'https://static.comicvine.com/uploads/scale_small/6/67663/6451280-01.jpg',
-  publishingDate: 2018,
-  issues: []
-}
-
 // ******************
 // Main app component
 class App extends Component {
   constructor(props) {
     super(props)
 
-    // state definition
     this.state = {
       searchText: '',
       searchResults: [],
@@ -73,7 +50,9 @@ class App extends Component {
     // fetch volume information
     if (this.state.searchText) {
       
+      // searchVolumes returns a promise
       const volumesPromises = searchVolumes(this.state.searchText.replace(' ', '%20'), baseURL, apiKey)
+
       volumesPromises.then(volumes => {
         let volumeList = volumes.map(volume => {
           return {
@@ -92,6 +71,7 @@ class App extends Component {
     }
   }
 
+  // when a collection on the sidebar is clicked it will show info on the main display
   handleOnClickCollection(collection) {
     this.setState({
       isSearch: false,
@@ -99,9 +79,11 @@ class App extends Component {
     })
   }
 
+  // when a result is clicked it will be added to the sidebar list
   handleOnClickResult(result) {
     let collections = this.state.collections.slice()
 
+    // add current volume info to collections on sidebar
     collections.push({
       id: result.id,
       title: result.title,
@@ -112,11 +94,12 @@ class App extends Component {
       publishingDate: result.publishingDate,
       issues: []
     })
-    console.log(collections)
+    
     this.setState({
       collections: collections
     })
   }
+
   render() {
     return (
       <div className="App">
@@ -127,6 +110,7 @@ class App extends Component {
           onSubmit={this.handleSearchSubmit}
           onClickCollection={this.handleOnClickCollection}
         />
+        {/* Main display can show either a search result or a collection from the sidebar */}
         {this.state.isSearch
           ? <SearchResults 
               results={this.state.searchResults}
@@ -136,7 +120,6 @@ class App extends Component {
               collection={this.state.collectionSelected}
             />
         }
-        
       </div>
     );
   }
