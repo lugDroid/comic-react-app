@@ -53,13 +53,11 @@ class App extends Component {
     if (this.state.searchText) {
       
       // searchVolumes returns a promise
-      const volumesPromises = searchVolumes(this.state.searchText.replace(' ', '%20'), baseURL, apiKey)
+      const volumesPromises = searchVolumes(this.state.searchText.replace(' ', '%20'), baseURL, apiKey, 0)
 
-      volumesPromises.then(data => {
-        this.setState({
-          numberOfResults: data.numberOfResults
-        })
-        let volumeList = data.results.map(volume => {
+      volumesPromises.then(results => {
+        let volumeList = results.map(volume => {
+          console.log(volume.name)
           return {
             id: volume.id,
             title: volume.name,
@@ -68,7 +66,7 @@ class App extends Component {
             publishingDate: volume.start_year,
           }
         })
-
+        console.log(volumeList)
         this.setState({
           searchResults: volumeList,
         })

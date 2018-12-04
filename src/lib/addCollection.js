@@ -2,21 +2,29 @@ const fetch = require('node-fetch')
 
 // search volumes given a search text
 // will return a promise that eventually will be an array with the results
-async function searchVolumes(volume, url, apiKey) {
-  url += '/volumes/' 
+async function searchVolumes(volume, baseUrl, apiKey, offset) {
+  let url = baseUrl + '/volumes/' 
   url += '?api_key=' + apiKey
   url += '&filter=name:' + volume 
-  url += '&format=json&sort=name:asc'
+  url += '&format=json&sort=name:asc&offset=' + offset
 
   console.log('Fetching info for volumes containing ' + volume)
   console.log(url)
   let volumesResult = await fetch(url)
     .then(res => res.json())
     .then(json => {
-      return {
-        results: json.results, 
-        numberOfResults: json.number_of_total_results
+      // if no more results to fetch return empty array
+      if (json.offset + json.number_of_page_results > json.number_of_total_results) {
+        console.log('Recursion finished')
+        return []
       }
+
+      // else calculate next offset
+      let offset= json.offset + json.number_of_page_results + 1
+      
+      return json.results.concat(
+        searchVolumes(volume, baseUrl, apiKey, offset).then(results => results)
+      )
     })
     .catch(error => console.log('Error reading data ' + error))
 
