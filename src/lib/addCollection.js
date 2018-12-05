@@ -2,22 +2,17 @@ const fetch = require('node-fetch')
 
 // search volumes given a search text
 // will return a promise that eventually will be an array with the results
-async function searchVolumes(volume, url, apiKey) {
+async function searchVolumes(volume, url, apiKey, offset) {
   url += '/volumes/' 
   url += '?api_key=' + apiKey
   url += '&filter=name:' + volume 
-  url += '&format=json&sort=name:asc'
+  url += '&format=json&sort=name:asc&offset=' + offset
 
   console.log('Fetching info for volumes containing ' + volume)
   console.log(url)
   let volumesResult = await fetch(url)
     .then(res => res.json())
-    .then(json => {
-      return {
-        results: json.results, 
-        numberOfResults: json.number_of_total_results
-      }
-    })
+    .then(json => json)
     .catch(error => console.log('Error reading data ' + error))
 
   return volumesResult

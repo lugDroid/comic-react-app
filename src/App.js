@@ -51,26 +51,53 @@ class App extends Component {
 
     // fetch volume information
     if (this.state.searchText) {
+      const textToSearch = this.state.searchText.replace(' ', '%20')
       
       // searchVolumes returns a promise
-      const volumesPromises = searchVolumes(this.state.searchText.replace(' ', '%20'), baseURL, apiKey)
+      const volumesPromises = searchVolumes(textToSearch, baseURL, apiKey, 0)
 
-      volumesPromises.then(data => {
+      volumesPromises.then(firstData => {
+        // 
+        let firstResults = firstData.results
+        let numberOfResultsFetched = firstData.number_of_page_results
+        let totalResults = firstData.number_of_total_results
+        let resultsPromises = []
+        let offset = 0
+
+        // total number of results is obtained in first fetch
         this.setState({
-          numberOfResults: data.numberOfResults
-        })
-        let volumeList = data.results.map(volume => {
-          return {
-            id: volume.id,
-            title: volume.name,
-            totalIssues: volume.count_of_issues,
-            img: volume.image.thumb_url,      
-            publishingDate: volume.start_year,
-          }
+          numberOfResults: firstData.number_of_total_results
         })
 
-        this.setState({
-          searchResults: volumeList,
+        // if all results are not provided keep fetching them
+        while (numberOfResultsFetched < totalResults) {
+          offset += 100
+          numberOfResultsFetched += 100
+          resultsPromises.push(searchVolumes(textToSearch, baseURL, apiKey, offset))
+        }
+
+        // When all results have been fetched update state
+        Promise.all(resultsPromises).then(dataArray => {
+          dataArray.forEach(data => {
+            console.log(firstResults.length)
+            console.log(data.results.length)
+            firstResults = firstResults.concat(data.results)
+            console.log(firstResults.length)
+          })
+
+          let volumeList = firstResults.map(volume => {
+            return {
+              id: volume.id,
+              title: volume.name,
+              totalIssues: volume.count_of_issues,
+              img: volume.image.thumb_url,      
+              publishingDate: volume.start_year,
+            }
+          })
+  
+          this.setState({
+            searchResults: volumeList,
+          })
         })
       })
     }
