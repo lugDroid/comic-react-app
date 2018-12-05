@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Sidebar from'./containers/Sidebar.js'
 import SearchResults from './containers/SearchResults.js'
-import {searchVolumes, searchIssues} from './lib/addCollection.js'
+import {searchVolumes, searchIssues} from './lib/api.js'
 import IssueList from './containers/IssueList.js'
 import {COMIC_VINE_API_KEY} from './key.js'
 import {misterMiracle, manOfSteel} from './tempData.js'
@@ -57,16 +57,19 @@ class App extends Component {
 
       volumesPromises.then(results => {
         let volumeList = results.map(volume => {
-          console.log(volume.name)
-          return {
-            id: volume.id,
-            title: volume.name,
-            totalIssues: volume.count_of_issues,
-            img: volume.image.thumb_url,      
-            publishingDate: volume.start_year,
+          if (typeof(volume) != Promise) {
+            return {
+              id: volume.id,
+              title: volume.name,
+              totalIssues: volume.count_of_issues,
+              img: volume.image.thumb_url,      
+              publishingDate: volume.start_year,
+            }
+          } else {
+            return {}
           }
         })
-        console.log(volumeList)
+
         this.setState({
           searchResults: volumeList,
         })

@@ -1,8 +1,6 @@
 const fetch = require('node-fetch')
 
-// search volumes given a search text
-// will return a promise that eventually will be an array with the results
-async function searchVolumes(volume, baseUrl, apiKey, offset) {
+async function getVolumes(volume, baseUrl, apiKey, offset) {
   let url = baseUrl + '/volumes/' 
   url += '?api_key=' + apiKey
   url += '&filter=name:' + volume 
@@ -10,6 +8,7 @@ async function searchVolumes(volume, baseUrl, apiKey, offset) {
 
   console.log('Fetching info for volumes containing ' + volume)
   console.log(url)
+
   let volumesResult = await fetch(url)
     .then(res => res.json())
     .then(json => {
@@ -22,13 +21,32 @@ async function searchVolumes(volume, baseUrl, apiKey, offset) {
       // else calculate next offset
       let offset= json.offset + json.number_of_page_results + 1
       
-      return json.results.concat(
-        searchVolumes(volume, baseUrl, apiKey, offset).then(results => results)
+      return json.results.concat(getVolumes(volume, baseUrl, apiKey, offset)
+        .then(results => results)
       )
     })
     .catch(error => console.log('Error reading data ' + error))
 
   return volumesResult
+}
+
+// search volumes given a search text
+// will return a promise that eventually will be an array with the results
+async function searchVolumes(volume, baseUrl, apiKey, offset) {
+
+  let resultsPromises = []
+
+  resultsPromises.push(getVolumes(volume, baseUrl, apiKey, offset))
+  
+  let finalResult = []
+  return Promise.all(resultsPromises)
+    .then(results => {
+      results.forEach(result => {
+        finalResult = finalResult.concat(result)
+      })
+      console.log(finalResult)
+      return finalResult
+    })
 }
 
 // search for issues given a volume id
