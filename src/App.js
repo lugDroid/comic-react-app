@@ -57,8 +57,7 @@ class App extends Component {
       const volumesPromises = searchVolumes(textToSearch, baseURL, apiKey, 0)
 
       volumesPromises.then(firstData => {
-        // 
-        let firstResults = firstData.results
+        let allResults = firstData.results
         let numberOfResultsFetched = firstData.number_of_page_results
         let totalResults = firstData.number_of_total_results
         let resultsPromises = []
@@ -79,13 +78,10 @@ class App extends Component {
         // When all results have been fetched update state
         Promise.all(resultsPromises).then(dataArray => {
           dataArray.forEach(data => {
-            console.log(firstResults.length)
-            console.log(data.results.length)
-            firstResults = firstResults.concat(data.results)
-            console.log(firstResults.length)
+            allResults = allResults.concat(data.results)
           })
 
-          let volumeList = firstResults.map(volume => {
+          /* let volumeList = allResults.map(volume => {
             return {
               id: volume.id,
               title: volume.name,
@@ -93,10 +89,12 @@ class App extends Component {
               img: volume.image.thumb_url,      
               publishingDate: volume.start_year,
             }
-          })
+          }) */
+
+          allResults.sort((a, b) => a.start_year - b.start_year)
   
           this.setState({
-            searchResults: volumeList,
+            searchResults: allResults,
           })
         })
       })

@@ -16,13 +16,13 @@ class SearchResults extends Component {
           ? <h3>Number of results - {this.props.numberOfResults}</h3>
           : <div></div>
         }
-        {this.props.results.map((volume, index) => 
+        {this.props.results.map((volumeData) => 
             <li 
-              key={volume.id}>
+              key={volumeData.id}>
               <Result
                 onClick={this.props.onClickResult}
-                volumeData={volume}
-                number={index}/>
+                volumeData={volumeData}
+              />
             </li>
           )}
       </div>
