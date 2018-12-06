@@ -5,7 +5,6 @@ import {searchVolumes, searchIssues} from './lib/addCollection.js'
 import IssueList from './containers/IssueList.js'
 import {COMIC_VINE_API_KEY} from './key.js'
 import {misterMiracle, manOfSteel} from './tempData.js'
-import './App.css'
 
 const proxy = 'https://cors-anywhere.herokuapp.com/'
 const baseURL = proxy + 'https://comicvine.gamespot.com/api'
